@@ -3,6 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { User } from './users/entities/user.entity';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,16 +16,13 @@ import { AppService } from './app.service';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
-        // host: configService.get('DATABASE_HOST'),
-        // port: configService.get('DATABASE_PORT'),
-        // username: configService.get('DATABASE_USER'),
-        // password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_DB'),
-        // entities: [],
+        entities: [User],
         synchronize: true,
         logging: true,
       }),
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

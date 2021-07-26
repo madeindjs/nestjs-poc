@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { HashService } from '../hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,10 +11,14 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly hashService: HashService,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.userRepository.save(createUserDto);
+  create({ email, password }: CreateUserDto) {
+    return this.userRepository.save({
+      email: email.toLowerCase(),
+      password: this.hashService.hashString(password),
+    });
   }
 
   findAll() {
@@ -31,7 +36,7 @@ export class UsersService {
       throw Error('Cannot find user');
     }
 
-    user.password = updateUserDto.password;
+    user.password = this.hashService.hashString(updateUserDto.password);
 
     return this.userRepository.save(user);
   }

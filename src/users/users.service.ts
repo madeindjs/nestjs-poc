@@ -29,6 +29,10 @@ export class UsersService {
     return this.userRepository.findOne({ id });
   }
 
+  findOneByEmail(email: string) {
+    return this.userRepository.findOne({ email });
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.findOne(id);
 
@@ -48,6 +52,6 @@ export class UsersService {
       throw Error('Cannot find user');
     }
 
-    this.userRepository.remove(user);
+    return this.userRepository.remove(user);
   }
 }

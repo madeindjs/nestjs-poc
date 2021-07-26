@@ -15,6 +15,6 @@ export class AuthController {
 
     const token = await this.authService.getToken(user);
 
-    return { access_token: token };
+    return { access_token: token, user };
   }
 }

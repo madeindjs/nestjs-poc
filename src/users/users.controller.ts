@@ -8,9 +8,14 @@ import {
   Param,
   Patch,
   Post,
+  Request,
+  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -31,30 +36,60 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const users = await this.usersService.findAll();
+
+    return users.map(({ email, id }) => ({ email, id }));
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @UseGuards(JwtAuthGuard)
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: Request & { user: User },
+  ) {
     const user = await this.usersService.findOne(+id);
 
     if (user === undefined) {
       throw new NotFoundException();
     }
 
+    if (req.user.id !== user.id) {
+      throw new UnauthorizedException();
+    }
+
     return user;
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    await this.ensureUserExists(id);
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+
+    @Request() req: Request & { user: User },
+  ) {
+    const user = await this.ensureUserExists(id);
+
+    if (req.user.id !== user.id) {
+      throw new UnauthorizedException();
+    }
+
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    await this.ensureUserExists(id);
+  @UseGuards(JwtAuthGuard)
+  async remove(
+    @Param('id') id: string,
+    @Request() req: Request & { user: User },
+  ) {
+    const user = await this.ensureUserExists(id);
+
+    if (req.user.id !== user.id) {
+      throw new UnauthorizedException();
+    }
+
     await this.usersService.remove(+id);
   }
 
@@ -64,5 +99,7 @@ export class UsersController {
     if (user === undefined) {
       throw new NotFoundException();
     }
+
+    return user;
   }
 }

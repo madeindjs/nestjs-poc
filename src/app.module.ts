@@ -1,14 +1,15 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { GithubModule } from './github/github.module';
 import { HashModule } from './hash/hash.module';
+import { PasswordResetModule } from './password-reset/password-reset.module';
 import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { PasswordResetModule } from './password-reset/password-reset.module';
-import { GithubModule } from './github/github.module';
 
 @Module({
   imports: [
@@ -25,6 +26,12 @@ import { GithubModule } from './github/github.module';
         synchronize: true,
         logging: true,
       }),
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
     }),
     UsersModule,
     HashModule,

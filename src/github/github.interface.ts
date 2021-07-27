@@ -31,3 +31,7 @@ export interface GithubUserResponse {
   login: string;
   avatar_url: string;
 }
+
+export interface GithubUserSearchJob {
+  email: string;
+}

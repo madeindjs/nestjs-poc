@@ -9,6 +9,6 @@ export class HashService {
     }
     const hash = createHash('sha256');
     hash.update(password);
-    return hash.digest().toString();
+    return hash.digest('base64');
   }
 }

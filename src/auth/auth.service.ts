@@ -26,7 +26,7 @@ export class AuthService {
       return undefined;
     }
 
-    if (this.hashService.hashString(password) !== user.password) {
+    if (this.hashService.hashString(password) !== user.passwordHashed) {
       this.logger.debug('password mismatch');
       return undefined;
     }

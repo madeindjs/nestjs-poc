@@ -120,7 +120,7 @@ describe('UsersController (e2e)', () => {
 
       const userUpdated = await userService.findOne(user.id);
 
-      expect(userUpdated.password).not.toEqual(user.password);
+      expect(userUpdated.passwordHashed).not.toEqual(user.passwordHashed);
     });
 
     it('should get 404', () => {

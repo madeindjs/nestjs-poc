@@ -17,7 +17,7 @@ export class UsersService {
   create({ email, password }: CreateUserDto) {
     return this.userRepository.save({
       email: email.toLowerCase(),
-      password: this.hashService.hashString(password),
+      passwordHashed: this.hashService.hashString(password),
     });
   }
 
@@ -29,18 +29,28 @@ export class UsersService {
     return this.userRepository.findOne({ id });
   }
 
-  findOneByEmail(email: string) {
-    return this.userRepository.findOne({ email });
+  findOneBy(field: keyof User, value: string) {
+    return this.userRepository.findOne({ [field]: value });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  findOneByEmail(email: string) {
+    return this.findOneBy('email', email);
+  }
+
+  async update(id: number, { password, resetPasswordToken }: UpdateUserDto) {
     const user = await this.findOne(id);
 
     if (user === undefined) {
       throw Error('Cannot find user');
     }
 
-    user.password = this.hashService.hashString(updateUserDto.password);
+    if (password !== undefined) {
+      user.passwordHashed = this.hashService.hashString(password);
+    }
+
+    if (resetPasswordToken !== undefined) {
+      user.resetPasswordToken = resetPasswordToken;
+    }
 
     return this.userRepository.save(user);
   }

@@ -1,7 +1,6 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
 import { HashModule } from '../hash/hash.module';
 import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
@@ -30,13 +29,13 @@ describe('AuthService', () => {
       ],
     }).compile();
 
-    const { manager } = moduleRef.get(Connection);
-    await manager.save(User, {
+    const usersService = moduleRef.get(UsersService);
+    await usersService.create({
       email: `auth-${new Date().getTime()}@test.fr`,
       password: 'tototo',
     });
 
-    service = moduleRef.get<AuthService>(AuthService);
+    service = moduleRef.get(AuthService);
   });
 
   it('should be defined', () => {

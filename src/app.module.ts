@@ -8,6 +8,7 @@ import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PasswordResetModule } from './password-reset/password-reset.module';
+import { GithubModule } from './github/github.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { PasswordResetModule } from './password-reset/password-reset.module';
     HashModule,
     AuthModule,
     PasswordResetModule,
+    GithubModule,
   ],
   controllers: [AppController],
   providers: [AppService],

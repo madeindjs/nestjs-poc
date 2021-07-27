@@ -34,6 +34,11 @@ curl -X POST -d email=test@test.fr -d password=123456  localhost:3000/auth
 export TKN="eyJhbGciOiJ...X4"
 curl  -H "Authorization: Bearer $TKN"  localhost:3000/users/1
 curl  -X PATCH -H "Authorization: Bearer $TKN" -d password=654321  localhost:3000/users/1
+
+# reset password
+curl -X POST -d email=test@test.fr localhost:3000/password-reset
+curl -X PATCH -d password=azerty localhost:3000/password-reset/1b0859ff-5fb6-4cbc-8c22-4902da3a0b20 # token extracted from server log
+curl -X POST -d email=test@test.fr -d password=azerty  localhost:3000/auth
 ```
 
 ## Test

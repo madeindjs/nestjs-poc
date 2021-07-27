@@ -7,6 +7,7 @@ import { HashModule } from './hash/hash.module';
 import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { PasswordResetModule } from './password-reset/password-reset.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     HashModule,
     AuthModule,
+    PasswordResetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,4 +12,7 @@ export class User {
 
   @Column({ type: 'text', nullable: false })
   passwordHashed: string;
+
+  @Column({ type: 'text', nullable: true })
+  resetPasswordToken: string;
 }

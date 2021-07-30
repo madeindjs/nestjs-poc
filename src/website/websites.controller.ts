@@ -9,6 +9,9 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { Request as Req } from 'express';
+import { CreditsGuard } from 'src/credits/credits.guard';
+import { CreditsService } from 'src/credits/credits.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../users/entities/user.entity';
 import { CreateWebsiteDto } from './dto/create-website.dto';
@@ -16,12 +19,15 @@ import { WebsitesService } from './websites.service';
 
 @Controller('websites')
 export class WebsitesController {
-  constructor(private readonly websiteService: WebsitesService) {}
+  constructor(
+    private readonly websiteService: WebsitesService,
+    private readonly creditsService: CreditsService,
+  ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, CreditsGuard)
   async create(
-    @Request() req: Request & { user: User },
+    @Request() req: Req & { user: User },
     @Body() createWebsiteDto: CreateWebsiteDto,
   ) {
     const existingWebsite = await this.websiteService.findOneBy(
@@ -35,6 +41,8 @@ export class WebsitesController {
 
     createWebsiteDto.user = req.user;
     const { id, url } = await this.websiteService.create(createWebsiteDto);
+
+    await this.creditsService.createFromRequest(req, req.user);
 
     return { id, url };
   }

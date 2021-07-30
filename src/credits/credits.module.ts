@@ -9,5 +9,6 @@ import { Credit } from './entities/credit.entity';
   imports: [TypeOrmModule.forFeature([User, Credit])],
   controllers: [CreditsController],
   providers: [CreditsService],
+  exports: [CreditsService],
 })
 export class CreditsModule {}

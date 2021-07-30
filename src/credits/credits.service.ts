@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
-import { CreateCreditDto } from './dto/create-credit.dto';
 import { Credit } from './entities/credit.entity';
 
 @Injectable()
@@ -13,31 +12,33 @@ export class CreditsService {
     private readonly creditRepository: Repository<Credit>,
   ) {}
 
-  createFromRequest(request: Request, user: User, cost: number = -1) {
+  createFromRequest(request: Request, user: User, amount: number = -1) {
     const params = { ...request.body };
     params.user = undefined;
 
     return this.creditRepository.save({
-      method: request.method,
-      cost,
       user,
-      url: request.url,
-      parameters: JSON.stringify(params),
+      amount,
+      metadata: JSON.stringify({
+        method: request.method,
+        url: request.url,
+        parameters: params,
+      }),
     });
   }
 
-  create(createCreditDto: CreateCreditDto) {
-    return this.creditRepository.save(createCreditDto);
+  addToUser(user: User, amount: number = 1) {
+    return this.creditRepository.save({ user, amount });
   }
 
-  async getSum(user: User): Promise<number> {
-    const { sum } = await this.creditRepository
+  async getAmount(user: User): Promise<number> {
+    const { amount } = await this.creditRepository
       .createQueryBuilder()
-      .select('SUM(cost) AS sum')
+      .select('SUM(amount) AS amount')
       .where({ user })
       .getRawOne();
 
-    return sum;
+    return amount;
   }
 
   findAll(user: User) {

@@ -13,9 +13,9 @@ export class CreditsGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
-    const sum = await this.creditsService.getSum(request.user);
+    const amount = await this.creditsService.getAmount(request.user);
 
-    if (sum <= 0) {
+    if (amount <= 0) {
       throw new HttpException('credit insufficient', 402);
     }
 

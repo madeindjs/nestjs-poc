@@ -12,17 +12,11 @@ export class Credit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'text', nullable: false })
-  url: string;
+  @Column({ type: 'text', nullable: true })
+  metadata: string;
 
-  @Column({ type: 'text', nullable: false })
-  method: string;
-
-  @Column({ type: 'text', nullable: false })
-  parameters: string;
-
-  @Column({ type: 'integer', default: 1, nullable: false })
-  cost: number;
+  @Column({ type: 'integer', nullable: false })
+  amount: number;
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false })
   user: User;

@@ -2,8 +2,8 @@ import { Process, Processor } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { GithubService } from '../github/github.service';
+import { UsersService } from '../users/users.service';
 import { GithubUserSearchJob } from './interfaces/github.interface';
-import { UsersService } from './users.service';
 
 @Injectable()
 @Processor('github')

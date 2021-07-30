@@ -3,11 +3,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from 'bull';
 import { Repository } from 'typeorm';
+import { GithubUserSearchJob } from '../github-user/interfaces/github.interface';
 import { HashService } from '../hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { GithubUserSearchJob } from './interfaces/github.interface';
 
 @Injectable()
 export class UsersService {

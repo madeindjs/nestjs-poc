@@ -6,6 +6,7 @@ import { AppService } from '../src/app.service';
 import { HashModule } from '../src/hash/hash.module';
 import { User } from '../src/users/entities/user.entity';
 import { UsersModule } from '../src/users/users.module';
+import { Website } from '../src/website/entities/website.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { UsersModule } from '../src/users/users.module';
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: configService.get('DATABASE_DB'),
-        entities: [User],
+        entities: [User, Website],
         synchronize: true,
         logging: false,
         keepConnectionAlive: true,

@@ -42,6 +42,18 @@ export class UsersController {
     return users.map(({ email, id }) => ({ email, id }));
   }
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async me(@Request() req: Request & { user: User }) {
+    return req.user.toPublicObject();
+  }
+
+  @Post('me/fetch-again')
+  @UseGuards(JwtAuthGuard)
+  updateMetadata(@Request() req: Request & { user: User }) {
+    return this.usersService.setBackgroundJobs(req.user);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async findOne(
@@ -58,7 +70,7 @@ export class UsersController {
       throw new UnauthorizedException();
     }
 
-    return user;
+    return user.toPublicObject();
   }
 
   @Patch(':id')

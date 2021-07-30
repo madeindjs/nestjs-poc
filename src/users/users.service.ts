@@ -1,24 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bull';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Queue } from 'bull';
 import { Repository } from 'typeorm';
 import { HashService } from '../hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { GithubUserSearchJob } from './interfaces/github.interface';
 
 @Injectable()
 export class UsersService {
+  private readonly logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly hashService: HashService,
+    @InjectQueue('github') private githubQueue: Queue<GithubUserSearchJob>,
   ) {}
 
-  create({ email, password }: CreateUserDto) {
-    return this.userRepository.save({
+  async create({ email, password }: CreateUserDto) {
+    const user = await this.userRepository.save({
       email: email.toLowerCase(),
       passwordHashed: this.hashService.hashString(password),
     });
+
+    await this.setBackgroundJobs(user);
+    return user;
+  }
+
+  async setBackgroundJobs({ email }: User) {
+    const job = await this.githubQueue.add({ email });
+    this.logger.debug(`pushed job #${job.id} as ${job.name}`);
   }
 
   findAll() {
@@ -37,7 +51,10 @@ export class UsersService {
     return this.findOneBy('email', email);
   }
 
-  async update(id: number, { password, resetPasswordToken }: UpdateUserDto) {
+  async update(
+    id: number,
+    { password, resetPasswordToken, metadata }: UpdateUserDto,
+  ) {
     const user = await this.findOne(id);
 
     if (user === undefined) {
@@ -50,6 +67,11 @@ export class UsersService {
 
     if (resetPasswordToken !== undefined) {
       user.resetPasswordToken = resetPasswordToken;
+    }
+
+    if (metadata !== undefined) {
+      const oldMetadata = JSON.parse(user.metadata);
+      user.metadata = JSON.stringify({ ...oldMetadata, ...metadata });
     }
 
     return this.userRepository.save(user);

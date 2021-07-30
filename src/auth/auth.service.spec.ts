@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull';
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -26,6 +27,14 @@ describe('AuthService', () => {
         JwtModule.register({
           secret: 'test',
         }),
+        BullModule.forRoot({
+          redis: {
+            name: 'test',
+            host: 'localhost',
+            port: 6379,
+          },
+        }),
+        BullModule.registerQueue({ name: 'github' }),
       ],
     }).compile();
 

@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HashModule } from '../hash/hash.module';
@@ -19,6 +20,14 @@ describe('UsersController', () => {
           entities: [User],
           synchronize: true,
         }),
+        BullModule.forRoot({
+          redis: {
+            name: 'test',
+            host: 'localhost',
+            port: 6379,
+          },
+        }),
+        BullModule.registerQueue({ name: 'github' }),
       ],
       controllers: [UsersController],
       providers: [UsersService],

@@ -15,4 +15,14 @@ export class User {
 
   @Column({ type: 'text', nullable: true })
   resetPasswordToken: string;
+
+  @Column({ type: 'text', default: '{}' })
+  metadata: string;
+
+  toPublicObject() {
+    return {
+      email: this.email,
+      metadata: JSON.parse(this.metadata),
+    };
+  }
 }

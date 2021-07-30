@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { CreditsModule } from './credits/credits.module';
+import { Credit } from './credits/entities/credit.entity';
 import { GithubUserModule } from './github-user/github-user.module';
 import { GithubModule } from './github/github.module';
 import { HashModule } from './hash/hash.module';
@@ -25,7 +27,7 @@ import { WebsitesModule } from './website/websites.module';
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: configService.get('DATABASE_DB'),
-        entities: [User, Website],
+        entities: [User, Website, Credit],
         synchronize: true,
         logging: true,
       }),
@@ -44,6 +46,7 @@ import { WebsitesModule } from './website/websites.module';
     GithubModule,
     WebsitesModule,
     GithubUserModule,
+    CreditsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

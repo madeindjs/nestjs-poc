@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AuthModule } from '../src/auth/auth.module';
 import { AuthService } from '../src/auth/auth.service';
+import { CreditsModule } from '../src/credits/credits.module';
+import { CreditsService } from '../src/credits/credits.service';
 import { User } from '../src/users/entities/user.entity';
 import { UsersModule } from '../src/users/users.module';
 import { UsersService } from '../src/users/users.service';
@@ -13,32 +15,37 @@ import { TestAppModule } from './testApp.module';
 
 describe('WebsiteController (e2e)', () => {
   let app: INestApplication;
-
-  let userService: UsersService;
   let websiteService: WebsitesService;
-  let authService: AuthService;
 
   let user: User;
   let token: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [UsersModule, TestAppModule, AuthModule, WebsitesModule],
+      imports: [
+        UsersModule,
+        TestAppModule,
+        AuthModule,
+        WebsitesModule,
+        CreditsModule,
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    userService = moduleFixture.get(UsersService);
     websiteService = moduleFixture.get(WebsitesService);
-    authService = moduleFixture.get(AuthService);
+    const userService = moduleFixture.get(UsersService);
+    const authService = moduleFixture.get(AuthService);
+    const creditsService = moduleFixture.get(CreditsService);
 
     user = await userService.create({
       email: `website-${new Date().getTime()}@test.fr`,
       password: 'tototo',
     });
     token = await authService.getToken(user);
+    await creditsService.addToUser(user, 100);
   });
 
   describe('/ GET', () => {

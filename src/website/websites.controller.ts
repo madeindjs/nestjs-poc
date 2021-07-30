@@ -10,9 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request as Req } from 'express';
-import { CreditsGuard } from 'src/credits/credits.guard';
-import { CreditsService } from 'src/credits/credits.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CreditsGuard } from '../credits/credits.guard';
+import { CreditsService } from '../credits/credits.service';
 import { User } from '../users/entities/user.entity';
 import { CreateWebsiteDto } from './dto/create-website.dto';
 import { WebsitesService } from './websites.service';

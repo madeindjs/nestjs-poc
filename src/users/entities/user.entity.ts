@@ -5,7 +5,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'text', unique: true, nullable: false })
+  @Column({ type: 'text', unique: true, nullable: false, update: false })
   email: string;
 
   password: string;

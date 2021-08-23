@@ -25,8 +25,6 @@ describe('UsersService', () => {
         BullModule.forRoot({
           redis: {
             name: 'test',
-            host: 'localhost',
-            port: 6379,
           },
         }),
         BullModule.registerQueue({ name: 'github' }),

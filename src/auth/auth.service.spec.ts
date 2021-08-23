@@ -1,4 +1,4 @@
-import { BullModule } from '@nestjs/bull';
+import { BullModule, getQueueToken } from '@nestjs/bull';
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let service: AuthService;
+  const exampleQueueMock = { add: () => ({ id: Date.now() }) };
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -27,16 +28,12 @@ describe('AuthService', () => {
         JwtModule.register({
           secret: 'test',
         }),
-        BullModule.forRoot({
-          redis: {
-            name: 'test',
-            host: 'localhost',
-            port: 6379,
-          },
-        }),
         BullModule.registerQueue({ name: 'github' }),
       ],
-    }).compile();
+    })
+      .overrideProvider(getQueueToken('github'))
+      .useValue(exampleQueueMock)
+      .compile();
 
     const usersService = moduleRef.get(UsersService);
     await usersService.create({

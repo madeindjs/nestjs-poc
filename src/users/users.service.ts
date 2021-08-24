@@ -32,7 +32,7 @@ export class UsersService {
 
   async setBackgroundJobs({ email }: User) {
     const job = await this.githubQueue.add({ email });
-    this.logger.debug(`pushed job #${job.id} as ${job.name}`);
+    this.logger.debug(`pushed job #${job?.id} as ${job?.name}`);
   }
 
   findAll() {

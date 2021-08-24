@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { getTypeOrmOptions } from '../../test/type-orm-module-options';
 import { User } from '../users/entities/user.entity';
 import { CreditsService } from './credits.service';
 import { Credit } from './entities/credit.entity';
@@ -12,12 +13,7 @@ describe('CreditsService', () => {
       providers: [CreditsService],
       imports: [
         TypeOrmModule.forFeature([Credit]),
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: ':memory:',
-          entities: [Credit, User],
-          synchronize: true,
-        }),
+        TypeOrmModule.forRoot(getTypeOrmOptions([Credit, User])),
       ],
     }).compile();
 

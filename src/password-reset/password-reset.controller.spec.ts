@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { getTypeOrmOptions } from '../../test/type-orm-module-options';
 import { User } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';
 import { PasswordResetController } from './password-reset.controller';
@@ -13,12 +14,7 @@ describe('PasswordResetController', () => {
       imports: [
         UsersModule,
         TypeOrmModule.forFeature([User]),
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: ':memory:',
-          entities: [User],
-          synchronize: true,
-        }),
+        TypeOrmModule.forRoot(getTypeOrmOptions([User])),
       ],
       providers: [PasswordResetService],
       controllers: [PasswordResetController],

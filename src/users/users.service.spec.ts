@@ -27,7 +27,7 @@ describe('UsersService', () => {
       .useValue(exampleQueueMock)
       .compile();
 
-    service = module.get<UsersService>(UsersService);
+    service = module.get(UsersService);
   });
 
   it('should be defined', () => {

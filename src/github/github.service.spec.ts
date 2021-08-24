@@ -17,7 +17,8 @@ describe.only('GithubService', () => {
   });
 
   describe('findUserByEmail', () => {
-    it('should get me', async () => {
+    // TODO mock HTTP
+    it.skip('should get me', async () => {
       const user = await service.findUserByEmail(
         'contact@rousseau-alexandre.Fr',
       );

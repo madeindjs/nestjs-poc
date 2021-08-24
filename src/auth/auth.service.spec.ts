@@ -31,17 +31,8 @@ describe('AuthService', () => {
       .useValue(exampleQueueMock)
       .compile();
 
-    const usersService = moduleRef.get(UsersService);
-
-    await usersService.create({
-      email: `auth-${new Date().getTime()}@test.fr`,
-      password: 'tototo',
-    });
-
     service = moduleRef.get(AuthService);
   });
-
-  afterEach(() => {});
 
   it('should be defined', () => {
     expect(service).toBeDefined();

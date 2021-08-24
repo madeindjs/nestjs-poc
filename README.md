@@ -1,5 +1,7 @@
 # Nest.js POC
 
+[![CI Nest.js app through Github Actions](https://github.com/madeindjs/nestjs-poc/actions/workflows/main.yml/badge.svg)](https://github.com/madeindjs/nestjs-poc/actions/workflows/main.yml)
+
 My personnal tests for [Nest](https://github.com/nestjs/nest).
 
 ## Installation
